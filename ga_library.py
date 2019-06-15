@@ -159,20 +159,9 @@ class GaService:
         """
         self.property = str(property)
 
-        client_secrets = os.path.join(os.path.dirname(__file__), 'client_secrets.json')
-        # Set up a Flow object to be used if we need to authenticate.
-        flow = client.flow_from_clientsecrets(client_secrets,
-                                              scope='https://www.googleapis.com/auth/analytics.readonly',
-                                              message=tools.message_if_missing(client_secrets))
-
-        # Prepare credentials, and authorize HTTP object with them.
-        # If the credentials don't exist or are invalid run through the native client
-        # flow. The Storage object will ensure that if successful the good
-        # credentials will get written back to a file.
-        storage = file.Storage('analytics.dat')
-        credentials = storage.get()
-        if not credentials or credentials.invalid:
-            credentials = tools.run_flow(flow, storage)
+        credentials_json = os.getenv('GA_CREDENTIALS')
+        assert credentials_json, 'GA_CREDENTIALS environment variable must be set to the contents of analytics.dat'
+        credentials = client.Credentials.new_from_json(credentials_json)
         http = credentials.authorize(http=build_http())
         self.service = discovery.build('analytics', 'v3', http=http)
         """:type self.service: googleapiclient.discovery.Resource"""
