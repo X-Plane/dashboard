@@ -71,7 +71,7 @@ app.layout = html.Div([
                           dcc.Graph(id='first-party-planes', figure=grapher.top_first_party()),
 
                           html.H2('Top Starting Locations', className='graph-title'),
-                          make_table(['Rank', 'Location', '% Flights'], ((i, loc, "%0.4f%%" % (pct * 10)) for i, (loc, pct) in enumerate(itertools.islice(starting_locations(service), 50)) if loc != '<REGION>')),
+                          make_table(['Rank', 'Location', '% Flights'], ((i + 1, loc, "%0.4f%%" % (pct * 10)) for i, (loc, pct) in enumerate(itertools.islice(starting_locations(service), 1, 51)))),
 
                           # html.H2('Operating Systems'),
                           # dcc.Graph(id='operating-systems', figure=hw_grapher.operating_systems()),
