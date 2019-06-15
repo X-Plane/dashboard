@@ -78,19 +78,19 @@ app.layout = html.Div([
                           html.H2('Top Starting Locations', className='graph-title'),
                           make_table(['Rank', 'Location', '% Flights'], ((i + 1, loc, "%0.4f%%" % (pct * 10)) for i, (loc, pct) in enumerate(itertools.islice(starting_locations(service), 1, 51)))),
 
-                          # html.H2('Operating Systems'),
-                          # dcc.Graph(id='operating-systems', figure=hw_grapher.operating_systems()),
-                          #
-                          # html.H2('Hardware'),
-                          # html.H3('RAM'),
-                          # dcc.Graph(id='ram-amounts', figure=hw_grapher.ram_amounts()),
-                          #
-                          # html.H3('Graphics Card Manufacturer'),
-                          # dcc.Graph(id='gpu-manufacturer', figure=hw_grapher.gpu_manufacturers()),
-                          #
-                          # # html.H3('Desktop vs. Mobile GPUs'),
-                          # # dcc.Graph(id='gpu-platform', figure=hw_grapher.gpu_mobile_vs_desktop()),
-                          # 
+                          html.H2('Operating Systems'),
+                          dcc.Graph(id='operating-systems', figure=hw_grapher.operating_systems()),
+
+                          html.H2('Hardware'),
+                          html.H3('RAM'),
+                          dcc.Graph(id='ram-amounts', figure=hw_grapher.ram_amounts()),
+
+                          html.H3('Graphics Card Manufacturer'),
+                          dcc.Graph(id='gpu-manufacturer', figure=hw_grapher.gpu_manufacturers()),
+
+                          # html.H3('Desktop vs. Mobile GPUs'),
+                          # dcc.Graph(id='gpu-platform', figure=hw_grapher.gpu_mobile_vs_desktop()),
+
                           html.H3('VR Headsets in Use'),
                           dcc.Graph(id='vr-headsets', figure=hw_grapher.vr_headsets()),
 
