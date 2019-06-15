@@ -164,12 +164,14 @@ class GaService:
         credentials = client.Credentials.new_from_json(credentials_json)
         http = credentials.authorize(http=build_http())
         self.service = discovery.build('analytics', 'v3', http=http)
+        assert self.service, 'Failed to set up analytics service'
         """:type self.service: googleapiclient.discovery.Resource"""
 
         profiles = self.service.management().profiles().list(
             accountId=self.account_id,
             webPropertyId=self.property).execute()
         self.profile_id = profiles.get('items')[0].get('id')
+        assert isinstance(self.profile_id, str) and self.profile_id, 'Failed to set up analytics connection'
 
     def __str__(self):
         return "%s(%s)" % (self.__class__.__name__, self.property)
