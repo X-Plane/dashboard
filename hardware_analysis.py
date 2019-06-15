@@ -61,15 +61,15 @@ class HardwareStats:
     def operating_systems(self) -> Dict[str, int]:
         platform_count = defaultdict(int)
         for row in self.qm.query(CustomDimension.Os):
-            val = int(row[1].replace(",", ""))
+            val = str_to_int(row[1])
             os_name = classify_platform(row[0])
             platform_count[os_name] += val
         return counts_to_percents(platform_count)
 
-    def operating_system_versions(self) -> Dict[str, int]:
+    def operating_system_versions(self) -> Dict[str, Dict[str, int]]:
         version_count = defaultdict(lambda: defaultdict(int))
         for row in self.qm.query(CustomDimension.Os):
-            val = int(row[1].replace(",", ""))
+            val = str_to_int(row[1])
             os_name = classify_platform(row[0])
             version = get_os_version(row[0])
             if version:
@@ -226,7 +226,7 @@ def perform_cpu_analysis(results_rows):
 
     cpu_cores = collections.defaultdict(int)
     for row in results_rows:
-        val = int(row[1].replace(",", ""))
+        val = str_to_int(row[1])
         core_count = get_cpu_core_count(row[0])
         cpu_cores[core_count] += val
 
@@ -468,7 +468,7 @@ def perform_flight_controls_analysis(results_rows):
     flight_control_type = collections.defaultdict(int)
     has_rudder_pedals = collections.defaultdict(int)
     for row in results_rows:
-        val = int(row[1].replace(",", ""))
+        val = str_to_int(row[1])
         flight_controls[canonicalize_stick_or_yoke_name(row[0])] += val
         flight_control_type[classify_stick_or_yoke(row[0])] += val
 

@@ -483,7 +483,7 @@ class AircraftStats:
         """:type: dict[Aircraft, int]"""
 
         for row in results_rows:
-            val = int(row[1].replace(",", ""))
+            val = str_to_int(row[1])
             if 'Class:' not in row[0]:  # this row got weirdly truncated... nothing to be done here
                 continue
             aircraft = Aircraft.from_str(row[0])
