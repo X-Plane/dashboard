@@ -181,7 +181,7 @@ class GaService:
     def query(self, app_version: Union[Version, int], metric: Metric, dimensions: Union[str, Iterable[str], CustomDimension, Iterable[CustomDimension], None]=None, additional_filters: Union[str, UserGroup, None]=None, override_start_date: Optional[Union[date, str]]=None) -> List[List[str]]:
         """:return: The rows of results"""
         if metric == Metric.Users and not app_version.value.has_full_data_retention():
-            return None
+            return [[]]
         if isinstance(app_version, int):
             for v in Version:
                 with suppress(ValueError):
@@ -207,7 +207,8 @@ class GaService:
             sort="-" + metric.value,
             filters=version_filter + (';' + str(additional_filters) if additional_filters else ''),
         ).execute()
-        return results.get('rows')
+        out = results.get('rows')
+        return out if out else [[]]
 
     def users(self, app_version, dimensions=None, additional_filters=None):
         return self.query(app_version, Metric.Users, dimensions, additional_filters)
