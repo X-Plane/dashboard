@@ -102,3 +102,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+client_secrets.json
+analytics.dat
+.ga_cache/
