@@ -90,15 +90,15 @@ app.layout = html.Div([
                           #
                           # # html.H3('Desktop vs. Mobile GPUs'),
                           # # dcc.Graph(id='gpu-platform', figure=hw_grapher.gpu_mobile_vs_desktop()),
-                          #
-                          # html.H3('VR Headsets in Use'),
-                          # dcc.Graph(id='vr-headsets', figure=hw_grapher.vr_headsets()),
-                          #
-                          # html.H3('% Users Who Have Flown in VR in 2019'),
-                          # dcc.Graph(id='vr-usage', figure=make_pie_chart_figure({
-                          #     'Has Used VR': 2.06,
-                          #     '2-D Monitor Only': 100 - 2.06
-                          # })),
+                          # 
+                          html.H3('VR Headsets in Use'),
+                          dcc.Graph(id='vr-headsets', figure=hw_grapher.vr_headsets()),
+
+                          html.H3('% Users Who Have Flown in VR in 2019'),
+                          dcc.Graph(id='vr-usage', figure=make_pie_chart_figure({
+                              'Has Used VR': 2.06,
+                              '2-D Monitor Only': 100 - 2.06
+                          })),
                       ],
                       style={'backgroundColor': colors['background']}
 )
