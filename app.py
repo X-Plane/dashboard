@@ -1,10 +1,13 @@
 #!/bin/env python3
 # -*- coding: utf-8 -*-
 import itertools
+import os
+from random import randint
 from typing import Iterable, Dict, Tuple, List, Any
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import flask
 from aircraft_analysis import AircraftStats, AcfStatGrapher
 from utils import make_pie_chart_figure
 from ga_library import GaService, Version, UserGroup, CustomDimension
@@ -29,7 +32,9 @@ def starting_locations(service: GaService) -> Iterable[Tuple[str, float]]:
 
 
 
-app = dash.Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
+server = flask.Flask(__name__)
+server.secret_key = os.environ.get('secret_key', str(randint(0, 1000000)))
+app = dash.Dash(__name__, server=server, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
 
 colors = {
     'background': '#ffffff',
@@ -99,5 +104,4 @@ app.layout = html.Div([
 )
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
-    server = app.server
+    app.run_server(debug='DEBUG' in os.environ)
