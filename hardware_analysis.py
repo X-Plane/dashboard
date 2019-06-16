@@ -188,7 +188,7 @@ class HardwareGrapher:
         return make_bar_chart_figure(self.stats.gpu_manufacturers(), 'GPU Manufacturers')
 
     def vr_headsets(self) -> plotly.graph_objs.Figure:
-        return make_bar_chart_figure(self.stats.vr_headsets(), 'VR Headsets', already_sorted=True)
+        return make_bar_chart_figure(self.stats.vr_headsets(), 'VR Headsets', already_sorted=True, y_label='% VR Users')
 
     def vr_usage(self) -> plotly.graph_objs.Figure:
         return make_pie_chart_figure(self.stats.vr_usage())
