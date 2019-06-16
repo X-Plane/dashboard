@@ -3,6 +3,7 @@
 from __future__ import division, print_function
 import argparse
 import collections
+import logging
 from ga_library import *
 from utils import *
 from collections import defaultdict, OrderedDict
@@ -137,7 +138,7 @@ class HardwareStats:
                     label = deduped_name
                     break
             else:
-                print('unknown headset: ' + label)
+                logging.debug('unknown headset: ' + label)
             headset_count[label] += str_to_int(row[1])
         return counts_to_percents(headset_count, smush_into_other_below_percent=1)
 
