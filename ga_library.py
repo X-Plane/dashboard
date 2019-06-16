@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from datetime import date, timedelta
 from enum import Enum
 from pathlib import Path
-from typing import List, Callable, Union, Iterable, Optional
+from typing import List, Callable, Union, Iterable, Optional, Any
 from googleapiclient import discovery
 from googleapiclient.http import build_http
 
@@ -110,37 +110,66 @@ class Version(Enum):
     def __str__(self): return self.value.name
 
 
-def disk_cached(func: Callable, expiration_minutes: float=24 * 60):
-    def wrapper(*args, **kwargs):
-        def serialize_args():
-            def is_just_an_object(arg: str): return all(token in arg for token in ('<', '>', ' object at '))
+class Cache(Enum):
+    OnDisk = 1
+    InMemory = 2
 
-            return '_'.join([str(arg) for arg in args if not is_just_an_object(str(arg))] +
-                            ["%s-%s" % (k, v) for k, v in kwargs])
+def cached(cache_type: Cache=Cache.InMemory, expiration_minutes: float=24 * 60):
+    def wrapper_wrapper_sigh(func: Callable):  # This is what it takes to pass a parameter to your decorator... https://stackoverflow.com/a/10176276/1417451
+        def wrapper_factory(cached: Callable, read_from_cache: Callable, write_to_cache: Callable):
+            def serialize_args(*args, **kwargs):
+                def is_just_an_object(arg: str): return all(token in arg for token in ('<', '>', ' object at '))
 
-        def expired(p: Path):
-            mins_since_modification = (time.time() - p.stat().st_mtime) / 60
+                return '_'.join([str(arg) for arg in args if not is_just_an_object(str(arg))] +
+                                ["%s-%s" % (k, v) for k, v in kwargs])
+
+            def wrapper(*args, **kwargs):
+                cache_id = func.__name__ + '-' + serialize_args(*args, **kwargs)
+                if cached(cache_id):
+                    return read_from_cache(cache_id)
+                else:
+                    out = func(*args, **kwargs)
+                    write_to_cache(cache_id, out)
+                    assert out == read_from_cache(cache_id), 'Serialization failed'
+                    return out
+            return wrapper
+
+        def expired(modification_time: float):
+            mins_since_modification = (time.time() - modification_time) / 60
             return mins_since_modification > expiration_minutes
 
-        def cached(p: Path):
-            return p.exists() and not expired(p)
+        if cache_type == Cache.InMemory:
+            cache = {}  # in-memory cache of IDs associated with a tuple of (modification time, data)
+            def write_to_cache(cache_id: str, value: Any):
+                cache[cache_id] = (time.time(), json.dumps(value))
 
-        def read_from_cache(p: Path):
-            with open(str(p), 'r') as in_file:
-                return json.loads(in_file.read())
-
-        cache_dir = Path(__file__).parent / '.ga_cache/'
-        cache_dir.mkdir(exist_ok=True)
-        cache_path = cache_dir / (func.__name__ + '-' + serialize_args())
-        if cached(cache_path):
-            return read_from_cache(cache_path)
+            return wrapper_factory(cached=lambda cache_id: cache_id in cache and not expired(cache[cache_id][0]),
+                                   read_from_cache=lambda cache_id: json.loads(cache[cache_id][1]),
+                                   write_to_cache=write_to_cache)
         else:
-            out = func(*args, **kwargs)
-            with open(str(cache_path), 'w') as out_file:
-                out_file.write(json.dumps(out))
-            assert out == read_from_cache(cache_path)
-            return out
-    return wrapper
+            cache_dir = Path(__file__).parent / '.ga_cache/'
+            cache_dir.mkdir(exist_ok=True)
+
+            def cached(cache_id: str):
+                cache_path = cache_dir / cache_id
+                return cache_path.exists() and not expired(cache_path.stat().st_mtime)
+
+            def read_from_cache(cache_id: str):
+                with (cache_dir / cache_id).open() as in_file:
+                    return json.loads(in_file.read())
+
+            def write_to_cache(cache_id: str, value: Any):
+                with (cache_dir / cache_id).open('w') as out_file:
+                    out_file.write(json.dumps(value))
+
+            return wrapper_factory(cached, read_from_cache, write_to_cache)
+    return wrapper_wrapper_sigh
+
+def disk_cached(func: Callable, expiration_minutes: float=24 * 60):
+    return cached(func, Cache.OnDisk, expiration_minutes)
+
+def mem_cached(func: Callable, expiration_minutes: float=24 * 60):
+    return cached(func, Cache.InMemory, expiration_minutes)
 
 
 class GaService:
@@ -177,7 +206,7 @@ class GaService:
         return "%s(%s)" % (self.__class__.__name__, self.property)
 
 
-    @disk_cached
+    @cached(cache_type=Cache.OnDisk if os.getenv('GA_CACHE_DISK') else Cache.InMemory)
     def query(self, app_version: Union[Version, int], metric: Metric, dimensions: Union[str, Iterable[str], CustomDimension, Iterable[CustomDimension], None]=None, additional_filters: Union[str, UserGroup, None]=None, override_start_date: Optional[Union[date, str]]=None) -> List[List[str]]:
         """:return: The rows of results"""
         if metric == Metric.Users and not app_version.value.has_full_data_retention():
