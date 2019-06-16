@@ -133,14 +133,14 @@ app.layout = html.Div([
                                   html.H3('Graphics Card Manufacturer', className='graph-title'),
                                   dcc.Graph(id='gpu-manufacturer', figure=hw_grapher.gpu_manufacturers()),
 
-                                  html.H3('VR Headsets in Use', className='graph-title'),
-                                  dcc.Graph(id='vr-headsets', figure=hw_grapher.vr_headsets()),
-
                                   html.H3('Users Who Have Flown in VR in 2019', className='graph-title'),
                                   dcc.Graph(id='vr-usage', figure=make_pie_chart_figure({
                                       'Have Used VR': 2.06,
                                       '2-D Monitor Only': 100 - 2.06
                                   }, top_pad_px=40)),
+
+                                  html.H3('VR Headsets in Use', className='graph-title'),
+                                  dcc.Graph(id='vr-headsets', figure=hw_grapher.vr_headsets()),
 
                                   html.H2('Operating Systems', className='graph-title'),
                                   dcc.Graph(id='operating-systems', figure=hw_grapher.operating_systems()),
