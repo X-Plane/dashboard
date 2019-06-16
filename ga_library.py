@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import time
 from contextlib import suppress
@@ -207,10 +208,11 @@ class GaService:
 
 
     @cached(cache_type=Cache.OnDisk if os.getenv('GA_CACHE_DISK') else Cache.InMemory)
-    def query(self, app_version: Union[Version, int], metric: Metric, dimensions: Union[str, Iterable[str], CustomDimension, Iterable[CustomDimension], None]=None, additional_filters: Union[str, UserGroup, None]=None, override_start_date: Optional[Union[date, str]]=None) -> List[List[str]]:
-        """:return: The rows of results"""
-        if metric == Metric.Users and not app_version.value.has_full_data_retention():
-            return []
+    def query(self, app_version: Union[Version, int], metric: Metric, dimensions: Union[str, Iterable[str], CustomDimension, Iterable[CustomDimension], None]=None, additional_filters: Union[str, UserGroup, None]=None, override_start_date: Optional[Union[date, str]]=None, strict_mode: bool=False) -> List[List[str]]:
+        """
+        :param strict_mode: If true, we won't return any results at all for incomplete queries; otherwise, we'll return as much data as we have.
+        :return: The rows of results
+        """
         if isinstance(app_version, int):
             for v in Version:
                 with suppress(ValueError):
@@ -219,6 +221,10 @@ class GaService:
                         break
             else:  # nobreak
                 raise ValueError('app_version must be convertable to a Version enum')
+
+        if strict_mode and metric == Metric.Users and not app_version.value.has_full_data_retention():
+            logging.warning("Refusing to answer users query for version %s (metric %s) with incomplete data retention" % (app_version, metric))
+            return []
 
         version_filter = "ga:appVersion=@X-Plane " + str(app_version)
         if isinstance(dimensions, list):
@@ -237,7 +243,11 @@ class GaService:
             filters=version_filter + (';' + str(additional_filters) if additional_filters else ''),
         ).execute()
         out = results.get('rows')
-        return out if out else []
+        if out:
+            return out
+        else:
+            logging.warning("No results for metric %s, version %s (this almost certainly indicates a logic error)" % (metric, app_version))
+            return []
 
     def users(self, app_version, dimensions=None, additional_filters=None):
         return self.query(app_version, Metric.Users, dimensions, additional_filters)
