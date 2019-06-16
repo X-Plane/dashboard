@@ -88,6 +88,18 @@ hardware = HardwareStats(service)
 hw_grapher = HardwareGrapher(hardware)
 
 app.layout = html.Div([
+                          html.Div([
+                              html.H1('X-Plane 11 Usage Data'),
+                              html.P('This is the always up-to-date X-Plane usage data page. It updates daily based on data received from users.'),
+                              html.P('The data shown here comes only from paying users of the X-Plane 11 simulator who have opted in to data collection.'),
+                              html.P(html.A('Learn more about X-Plane\'s opt-in data collection here.', href='https://www.x-plane.com/kb/data-collection-privacy-policy/')),
+                              html.P([
+                                  'Please report any issues with this dashboard, or file any feature requests, ',
+                                  html.A('on the project\'s GitHub page', href='https://github.com/X-Plane/dashboard/issues'),
+                                  '.'
+                              ]),
+                          ], className='prose'),
+
                           html.H2('Aircraft'),
                           html.Div([
                               html.Div([
@@ -109,14 +121,11 @@ app.layout = html.Div([
 
                           html.Div([
                               html.Div([
-                                  html.H2('Top Starting Locations'),
+                                  html.H2('Top Starting Locations', className='graph-title left'),
                                   make_table(['Rank', 'Location', '% Flights'], ((i + 1, loc, "%0.4f%%" % (pct * 10)) for i, (loc, pct) in enumerate(itertools.islice(starting_locations(service), 1, 51)))),
                               ], style={'float': 'right', 'width': '33%'}),
 
                               html.Div([
-                                  html.H2('Operating Systems', className='graph-title'),
-                                  dcc.Graph(id='operating-systems', figure=hw_grapher.operating_systems()),
-
                                   html.H2('Hardware'),
                                   html.H3('RAM', className='graph-title'),
                                   dcc.Graph(id='ram-amounts', figure=hw_grapher.ram_amounts()),
@@ -132,6 +141,9 @@ app.layout = html.Div([
                                       'Have Used VR': 2.06,
                                       '2-D Monitor Only': 100 - 2.06
                                   }, top_pad_px=40)),
+
+                                  html.H2('Operating Systems', className='graph-title'),
+                                  dcc.Graph(id='operating-systems', figure=hw_grapher.operating_systems()),
                               ], style={'width': '67%'}),
                           ], style={'margin-top': '2rem'}),
 
