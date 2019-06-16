@@ -148,7 +148,7 @@ class HardwareStats:
         vr_users = sum(str_to_int(row[1]) for row in self.qm.query(CustomDimension.VrHeadset, override_start_date=vr_start_date))
         vr_pct = vr_users / total_users
         return {
-            'Has Used VR': vr_pct,
+            'Have Used VR': vr_pct,
             '2-D Monitor Only': 100 - vr_pct
         }
 
@@ -163,27 +163,13 @@ class HardwareGrapher:
         self.stats = stats
 
     def operating_systems(self) -> plotly.graph_objs.Figure:
-        platform_count = self.stats.operating_systems()
-        chart = plotly.graph_objs.Pie(
-            labels=list(platform_count.keys()),
-            text=list(platform_count.keys()),
-            values=list(platform_count.values()),
-            #textfont=dict(size=38)
-        )
-        return plotly.graph_objs.Figure(data=[chart], layout=plotly.graph_objs.Layout(showlegend=False))
+        return make_pie_chart_figure(self.stats.operating_systems())
 
     def ram_amounts(self) -> plotly.graph_objs.Figure:
         return make_bar_chart_figure(self.stats.ram_amounts(), 'Users with at Least <em>x</em> GB RAM', make_x_label=lambda l: str(l) + '+')
 
     def gpu_mobile_vs_desktop(self) -> plotly.graph_objs.Figure:
-        mobile_vs_desktop = self.stats.gpu_platform()
-        chart = plotly.graph_objs.Pie(
-            labels=list(mobile_vs_desktop.keys()),
-            text=list(mobile_vs_desktop.keys()),
-            values=list(mobile_vs_desktop.values()),
-            # textfont=dict(size=38)
-        )
-        return plotly.graph_objs.Figure(data=[chart], layout=plotly.graph_objs.Layout(showlegend=False))
+        return make_pie_chart_figure(self.stats.gpu_platform())
 
     def gpu_manufacturers(self) -> plotly.graph_objs.Figure:
         return make_bar_chart_figure(self.stats.gpu_manufacturers(), 'GPU Manufacturers')
@@ -192,7 +178,7 @@ class HardwareGrapher:
         return make_bar_chart_figure(self.stats.vr_headsets(), 'VR Headsets', already_sorted=True, y_label='% VR Users')
 
     def vr_usage(self) -> plotly.graph_objs.Figure:
-        return make_pie_chart_figure(self.stats.vr_usage())
+        return make_pie_chart_figure(self.stats.vr_usage(), top_pad_px=40)
 
 
 def perform_os_analysis(stats: HardwareStats, grapher: HardwareGrapher):

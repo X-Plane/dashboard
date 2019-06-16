@@ -95,6 +95,7 @@ def make_bar_chart_figure(data_dict, x_label, y_label='% Users', x_axis_size=16,
                                         title=title,
                                         xaxis=dict(tickfont=dict(size=x_axis_size), title=y_label if horizontal else x_label, automargin=True),
                                         yaxis=dict(tickfont=dict(size=y_axis_size), title=x_label if horizontal else y_label, automargin=True),
+                                        margin=dict(t=0, b=0, pad=0)
                                     ))
 
 def make_bar_chart(data_dict, out_file_name, x_label, y_label='% Users', x_axis_size=32, y_axis_size=24, make_x_label=lambda l: str(l), horizontal=False, height_scaling_factor=1, needs_conversion_to_percents=False, already_sorted=False):
@@ -102,13 +103,18 @@ def make_bar_chart(data_dict, out_file_name, x_label, y_label='% Users', x_axis_
     plotly.offline.plot(figure, image='png', output_type='file', image_filename=out_file_name, image_width=1024, image_height=600 * height_scaling_factor)
 
 
-def make_pie_chart_figure(data_dict):
+def make_pie_chart_figure(data_dict, top_pad_px: int=0) -> plotly.graph_objs.Figure:
     chart = plotly.graph_objs.Pie(
         labels=list(data_dict.keys()),
         text=list(data_dict.keys()),
+        textfont=dict(size=18),
         values=list(data_dict.values())
     )
-    return plotly.graph_objs.Figure(data=[chart], layout=plotly.graph_objs.Layout(showlegend=False))
+    return plotly.graph_objs.Figure(data=[chart],
+                                    layout=plotly.graph_objs.Layout(
+                                        showlegend=False,
+                                        margin=dict(t=top_pad_px, b=0)
+                                    ))
 
 def counts_to_percents(count_dict: Dict[str, int], override_total: Union[None, int]=None, smush_into_other_below_percent: float=0):
     total = override_total if override_total else total_entries_in_dict(count_dict)

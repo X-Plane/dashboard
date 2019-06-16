@@ -88,24 +88,18 @@ hardware = HardwareStats(service)
 hw_grapher = HardwareGrapher(hardware)
 
 app.layout = html.Div([
-                          # html.H1('Hello Dash',
-                          #         style={
-                          #             'textAlign': 'center',
-                          #             'color': colors['text']
-                          #         }),
-                          #
-                          # html.Div('Dash: A web application framework for Python.',
-                          #          style={
-                          #              'textAlign': 'center',
-                          #              'color': colors['text']
-                          #          }),
-
                           html.H2('Aircraft'),
-                          html.H3('Flights by Aircraft Category', className='graph-title'),
-                          dcc.Graph(id='categories', figure=grapher.categories()),
+                          html.Div([
+                              html.Div([
+                                  html.H3('First- vs. Third-Party Aircraft Usage', className='graph-title'),
+                                  dcc.Graph(id='first-vs-third-party', figure=grapher.first_vs_third_party()),
+                              ], style={'width': '50%', 'float': 'right'}),
 
-                          html.H3('First- vs. Third-Party Aircraft Usage', className='graph-title'),
-                          dcc.Graph(id='first-vs-third-party', figure=grapher.first_vs_third_party()),
+                              html.Div([
+                                  html.H3('Flights by Aircraft Category', className='graph-title'),
+                                  dcc.Graph(id='categories', figure=grapher.categories()),
+                              ], style={'width': '50%'}),
+                          ]),
 
                           html.H3('Top Third-Party Aircraft', className='graph-title'),
                           dcc.Graph(id='third-party-planes', figure=grapher.top_third_party()),
@@ -113,30 +107,34 @@ app.layout = html.Div([
                           html.H3('Top First-Party Aircraft', className='graph-title'),
                           dcc.Graph(id='first-party-planes', figure=grapher.top_first_party()),
 
-                          html.H2('Top Starting Locations', className='graph-title'),
-                          make_table(['Rank', 'Location', '% Flights'], ((i + 1, loc, "%0.4f%%" % (pct * 10)) for i, (loc, pct) in enumerate(itertools.islice(starting_locations(service), 1, 51)))),
+                          html.Div([
+                              html.Div([
+                                  html.H2('Top Starting Locations'),
+                                  make_table(['Rank', 'Location', '% Flights'], ((i + 1, loc, "%0.4f%%" % (pct * 10)) for i, (loc, pct) in enumerate(itertools.islice(starting_locations(service), 1, 51)))),
+                              ], style={'float': 'right', 'width': '33%'}),
 
-                          html.H2('Operating Systems'),
-                          dcc.Graph(id='operating-systems', figure=hw_grapher.operating_systems()),
+                              html.Div([
+                                  html.H2('Operating Systems', className='graph-title'),
+                                  dcc.Graph(id='operating-systems', figure=hw_grapher.operating_systems()),
 
-                          html.H2('Hardware'),
-                          html.H3('RAM'),
-                          dcc.Graph(id='ram-amounts', figure=hw_grapher.ram_amounts()),
+                                  html.H2('Hardware'),
+                                  html.H3('RAM', className='graph-title'),
+                                  dcc.Graph(id='ram-amounts', figure=hw_grapher.ram_amounts()),
 
-                          html.H3('Graphics Card Manufacturer'),
-                          dcc.Graph(id='gpu-manufacturer', figure=hw_grapher.gpu_manufacturers()),
+                                  html.H3('Graphics Card Manufacturer', className='graph-title'),
+                                  dcc.Graph(id='gpu-manufacturer', figure=hw_grapher.gpu_manufacturers()),
 
-                          # html.H3('Desktop vs. Mobile GPUs'),
-                          # dcc.Graph(id='gpu-platform', figure=hw_grapher.gpu_mobile_vs_desktop()),
+                                  html.H3('VR Headsets in Use', className='graph-title'),
+                                  dcc.Graph(id='vr-headsets', figure=hw_grapher.vr_headsets()),
 
-                          html.H3('VR Headsets in Use'),
-                          dcc.Graph(id='vr-headsets', figure=hw_grapher.vr_headsets()),
+                                  html.H3('Users Who Have Flown in VR in 2019', className='graph-title'),
+                                  dcc.Graph(id='vr-usage', figure=make_pie_chart_figure({
+                                      'Have Used VR': 2.06,
+                                      '2-D Monitor Only': 100 - 2.06
+                                  }, top_pad_px=40)),
+                              ], style={'width': '67%'}),
+                          ], style={'margin-top': '2rem'}),
 
-                          html.H3('Users Who Have Flown in VR in 2019'),
-                          dcc.Graph(id='vr-usage', figure=make_pie_chart_figure({
-                              'Has Used VR': 2.06,
-                              '2-D Monitor Only': 100 - 2.06
-                          })),
                       ],
                       style={'backgroundColor': colors['background']}
 )

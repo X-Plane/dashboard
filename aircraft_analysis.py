@@ -500,16 +500,11 @@ class AcfStatGrapher:
     acf_stats: AircraftStats
 
     def first_vs_third_party(self, with_title=False):
-        vals = [self.acf_stats.first_party_flights / self.acf_stats.total_flights, self.acf_stats.third_party_flights / self.acf_stats.total_flights]
-        first_vs_third_party_pie_chart = plotly.graph_objs.Pie(
-            labels=['Laminar Research', 'Third Party'],
-            values=vals,
-            textinfo='label+percent',
-            #textfont=dict(size=36)
-        )
-        return plotly.graph_objs.Figure(data=[first_vs_third_party_pie_chart],
-                                        layout=plotly.graph_objs.Layout(showlegend=False,
-                                                                        title='First- vs. Third-Party Aircraft Usage' if with_title else None))
+        lr_percent = self.acf_stats.first_party_flights / self.acf_stats.total_flights
+        return make_pie_chart_figure({
+            'Laminar Research': lr_percent,
+            'Third Party': 1 - lr_percent
+        })
 
     def top_third_party(self, with_title=False):
         third_party_flights = self.acf_stats.third_party
