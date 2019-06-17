@@ -134,6 +134,7 @@ app.layout = html.Div([
                                   dcc.Graph(id='gpu-manufacturer', figure=hw_grapher.gpu_manufacturers()),
 
                                   html.H3('Users Who Have Flown in VR in 2019', className='graph-title'),
+                                  # TODO: Fix live reporting...
                                   dcc.Graph(id='vr-usage', figure=make_pie_chart_figure({
                                       'Have Used VR': 2.06,
                                       '2-D Monitor Only': 100 - 2.06
