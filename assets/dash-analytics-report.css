@@ -330,6 +330,11 @@ ol ul {
 li {
   margin-bottom: 1rem; }
 
+#table-of-contents ul, #table-of-contents li {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 
 /* Tables
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
