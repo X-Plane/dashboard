@@ -93,73 +93,104 @@ hw_grapher = HardwareGrapher(hardware)
 
 app.layout = html.Div([
                           html.Div([
-                              html.H1('X-Plane 11 Usage Data'),
-                              html.P('This is the always up-to-date X-Plane usage data page. It updates daily based on data received from users.'),
-                              html.P('The data shown here comes only from paying users of the X-Plane 11 simulator who have opted in to data collection.'),
-                              html.P(html.A('Learn more about X-Plane\'s opt-in data collection here.', href='https://www.x-plane.com/kb/data-collection-privacy-policy/')),
-                              html.P([
-                                  'Please report any issues with this dashboard, or file any feature requests, ',
-                                  html.A('on the project\'s GitHub page', href='https://github.com/X-Plane/dashboard/issues'),
-                                  '.'
-                              ]),
                           ], className='prose'),
-
-                          html.H2('Aircraft'),
                           html.Div([
                               html.Div([
-                                  html.H3('First- vs. Third-Party Aircraft Usage', className='graph-title'),
+                                  html.Ol([
+                                      html.Li([html.A('Aircraft', href='#aircraft'),
+                                               html.Ul([
+                                                   html.Li(html.A('First- vs. Third-Party Aircraft Usage', href='#first-vs-third-party-heading')),
+                                                   html.Li(html.A('Flights by Aircraft Category', href='#categories-heading')),
+                                                   html.Li(html.A('Top Third-Party Aircraft', href='#top-third-party-heading')),
+                                                   html.Li(html.A('Top First-Party Aircraft', href='#top-first-party-heading')),
+                                               ])]),
+                                       html.Li(html.A('Top Starting Locations', href='#locations-heading')),
+                                       html.Li([html.A('Hardware', href='#hardware'),
+                                               html.Ul([
+                                                   html.Li(html.A('RAM', href='#ram-heading')),
+                                                   html.Li(html.A('Graphics Card Manufacturer', href='#gpu-mfr-heading')),
+                                                   html.Li(html.A('Users Who Have Flown in VR in 2019', href='#vr-usage-heading')),
+                                                   html.Li(html.A('VR Headsets in Use', href='#vr-headsets-heading')),
+                                               ])]),
+                                       html.Li(html.A('Operating Systems', href='#os-heading')),
+                                      html.Li([html.A('X-Plane Scenery Gateway', href='#gateway'),
+                                               html.Ul([
+                                                   html.Li(html.A('3-D Gateway Airports', href='#gateway-3d-heading')),
+                                                   html.Li(html.A('Total Submitted Gateway Scenery Packs', href='#gateway-packs-heading')),
+                                                   html.Li(html.A('Registered Gateway Artists', href='#gateway-artists-heading')),
+                                               ])]),
+                                  ], id='table-of-contents'),
+                              ], className='prose', style={'width': '33%', 'float': 'right'}),
+
+                              html.Div([
+                                  html.H1('X-Plane 11 Usage Data'),
+                                  html.P('This is the always up-to-date X-Plane usage data page. It updates daily based on data received from users.'),
+                                  html.P('The data shown here comes only from paying users of the X-Plane 11 simulator who have opted in to data collection.'),
+                                  html.P(html.A('Learn more about X-Plane\'s opt-in data collection here.', href='https://www.x-plane.com/kb/data-collection-privacy-policy/')),
+                                  html.P([
+                                      'Please report any issues with this dashboard, or file any feature requests, ',
+                                      html.A('on the project\'s GitHub page', href='https://github.com/X-Plane/dashboard/issues'),
+                                      '.'
+                                  ]),
+                              ], style={'width': '60%'}),
+                          ]),
+
+                          html.H2('Aircraft', id='aircraft', style={'clear': 'both'}),
+                          html.Div([
+                              html.Div([
+                                  html.H3('First- vs. Third-Party Aircraft Usage', className='graph-title', id='first-vs-third-party-heading'),
                                   dcc.Graph(id='first-vs-third-party', figure=grapher.first_vs_third_party()),
                               ], style={'width': '50%', 'float': 'right'}),
 
                               html.Div([
-                                  html.H3('Flights by Aircraft Category', className='graph-title'),
+                                  html.H3('Flights by Aircraft Category', className='graph-title', id='categories-heading'),
                                   dcc.Graph(id='categories', figure=grapher.categories()),
                               ], style={'width': '50%'}),
                           ]),
 
-                          html.H3('Top Third-Party Aircraft', className='graph-title'),
+                          html.H3('Top Third-Party Aircraft', className='graph-title', id='top-third-party-heading'),
                           dcc.Graph(id='third-party-planes', figure=grapher.top_third_party()),
 
-                          html.H3('Top First-Party Aircraft', className='graph-title'),
+                          html.H3('Top First-Party Aircraft', className='graph-title', id='top-first-party-heading'),
                           dcc.Graph(id='first-party-planes', figure=grapher.top_first_party()),
 
                           html.Div([
                               html.Div([
-                                  html.H2('Top Starting Locations', className='graph-title left'),
+                                  html.H2('Top Starting Locations', className='graph-title left', id='locations-heading'),
                                   make_table(['Rank', 'Location', '% Flights'], ((i + 1, loc, "%0.4f%%" % (pct * 10)) for i, (loc, pct) in enumerate(itertools.islice(starting_locations(service), 1, 51)))),
                               ], style={'float': 'right', 'width': '33%'}),
 
                               html.Div([
-                                  html.H2('Hardware'),
-                                  html.H3('RAM', className='graph-title'),
+                                  html.H2('Hardware', id='hardware'),
+                                  html.H3('RAM', className='graph-title', id='ram-heading'),
                                   dcc.Graph(id='ram-amounts', figure=hw_grapher.ram_amounts()),
 
-                                  html.H3('Graphics Card Manufacturer', className='graph-title'),
+                                  html.H3('Graphics Card Manufacturer', className='graph-title', id='gpu-mfr-heading'),
                                   dcc.Graph(id='gpu-manufacturer', figure=hw_grapher.gpu_manufacturers()),
 
-                                  html.H3('Users Who Have Flown in VR in 2019', className='graph-title'),
+                                  html.H3('Users Who Have Flown in VR in 2019', className='graph-title', id='vr-usage-heading'),
                                   # TODO: Fix live reporting...
                                   dcc.Graph(id='vr-usage', figure=make_pie_chart_figure({
                                       'Have Used VR': 2.06,
                                       '2-D Monitor Only': 100 - 2.06
                                   }, top_pad_px=40)),
 
-                                  html.H3('VR Headsets in Use', className='graph-title'),
+                                  html.H3('VR Headsets in Use', className='graph-title', id='vr-headsets-heading'),
                                   dcc.Graph(id='vr-headsets', figure=hw_grapher.vr_headsets()),
 
-                                  html.H2('Operating Systems', className='graph-title'),
+                                  html.H2('Operating Systems', className='graph-title', id='os-heading'),
                                   dcc.Graph(id='operating-systems', figure=hw_grapher.operating_systems()),
                               ], style={'width': '67%'}),
                           ], style={'margin-top': '2rem'}),
 
-                          html.H2('X-Plane Scenery Gateway'),
-                          html.H3('3-D Gateway Airports', className='graph-title'),
+                          html.H2('X-Plane Scenery Gateway', id='gateway'),
+                          html.H3('3-D Gateway Airports', className='graph-title', id='gateway-3d-heading'),
                           dcc.Graph(id='gateway-airports-3d', figure=gateway.airports_3d_over_time(color=color_orange)),
 
-                          html.H3('Total Submitted Gateway Scenery Packs', className='graph-title'),
+                          html.H3('Total Submitted Gateway Scenery Packs', className='graph-title', id='gateway-packs-heading'),
                           dcc.Graph(id='gateway-packs', figure=gateway.total_submissions_over_time()),
 
-                          html.H3('Registered Gateway Artists', className='graph-title'),
+                          html.H3('Registered Gateway Artists', className='graph-title', id='gateway-artists-heading'),
                           dcc.Graph(id='gateway-artists', figure=gateway.registered_artists_over_time(color=color_orange)),
                       ],
                       style={'backgroundColor': colors['background']}
