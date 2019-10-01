@@ -4,7 +4,7 @@ import re
 import plotly
 from collections import OrderedDict, defaultdict
 from datetime import date
-from typing import Dict, Union
+from typing import Dict, Union, Optional
 
 
 def classify_platform(os_string):
@@ -88,6 +88,26 @@ def make_bar_chart_figure(data_dict, x_label, y_label='% Users', x_axis_size=16,
         text=["%0.1f%%" % val for val in sorted_data.values()],
         textposition='auto',
         orientation='h' if horizontal else 'v'
+    )
+    return plotly.graph_objs.Figure(data=[bar_chart],
+                                    layout=plotly.graph_objs.Layout(
+                                        showlegend=False,
+                                        title=title,
+                                        xaxis=dict(tickfont=dict(size=x_axis_size), title=y_label if horizontal else x_label, automargin=True),
+                                        yaxis=dict(tickfont=dict(size=y_axis_size), title=x_label if horizontal else y_label, automargin=True),
+                                        margin=dict(t=0, b=0, pad=0)
+                                    ))
+
+def make_absolute_bar_chart_figure(ordered_data_dict, x_label, y_label, x_axis_size=16, y_axis_size=14, make_x_label=lambda l: str(l), horizontal=False, title=None, bar_color: Optional[str]=None):
+    import plotly
+    x = [make_x_label(label) for label in ordered_data_dict.keys()]
+    y = list(ordered_data_dict.values())
+    bar_chart = plotly.graph_objs.Bar(
+        x=y if horizontal else x,
+        y=x if horizontal else y,
+        textposition='auto',
+        orientation='h' if horizontal else 'v',
+        marker=dict(color=bar_color)
     )
     return plotly.graph_objs.Figure(data=[bar_chart],
                                     layout=plotly.graph_objs.Layout(

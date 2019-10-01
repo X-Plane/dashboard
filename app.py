@@ -9,6 +9,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import flask
 from aircraft_analysis import AircraftStats, AcfStatGrapher
+from gateway import GatewayGrapher
 from utils import make_pie_chart_figure
 from ga_library import GaService, Version, UserGroup, CustomDimension
 from hardware_analysis import HardwareStats, HardwareGrapher
@@ -79,6 +80,9 @@ colors = {
     'text': '#333'
 }
 
+gateway = GatewayGrapher()
+color_orange = 'rgb(255, 127, 14)'
+
 service = GaService.desktop()
 
 acf_rankings = AircraftStats.from_ga(service, Version.v11, UserGroup.PaidOnly)
@@ -148,6 +152,15 @@ app.layout = html.Div([
                               ], style={'width': '67%'}),
                           ], style={'margin-top': '2rem'}),
 
+                          html.H2('X-Plane Scenery Gateway'),
+                          html.H3('3-D Gateway Airports', className='graph-title'),
+                          dcc.Graph(id='gateway-airports-3d', figure=gateway.airports_3d_over_time(color=color_orange)),
+
+                          html.H3('Total Submitted Gateway Scenery Packs', className='graph-title'),
+                          dcc.Graph(id='gateway-packs', figure=gateway.total_submissions_over_time()),
+
+                          html.H3('Registered Gateway Artists', className='graph-title'),
+                          dcc.Graph(id='gateway-artists', figure=gateway.registered_artists_over_time(color=color_orange)),
                       ],
                       style={'backgroundColor': colors['background']}
 )
