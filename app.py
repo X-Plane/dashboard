@@ -24,7 +24,8 @@ def make_table(header: Iterable[str], rows: Iterable[Iterable[Any]]) -> html.Tab
 def starting_locations(service: GaService) -> Iterable[Tuple[str, float]]:
     flight_counts = []
     for row in service.events(11, CustomDimension.Region, override_start_date='2019-04-01'):
-        flight_counts.append((row[0], int(row[1])))
+        if row[0] != '<REGION>':
+            flight_counts.append((row[0], int(row[1])))
 
     # Convert absolute numbers to percents
     total_flights = sum(count for loc, count in flight_counts)
