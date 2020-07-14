@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import itertools
 import os
+from datetime import datetime
 from random import randint
 from typing import Iterable, Dict, Tuple, List, Any
 import dash
@@ -92,6 +93,8 @@ grapher = AcfStatGrapher(acf_rankings)
 hardware = HardwareStats(service)
 hw_grapher = HardwareGrapher(hardware)
 
+app_start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
 app.layout = html.Div([
                           html.Div([
                           ], className='prose'),
@@ -133,6 +136,10 @@ app.layout = html.Div([
                                       html.A('on the project\'s GitHub page', href='https://github.com/X-Plane/dashboard/issues'),
                                       '.'
                                   ]),
+                                  html.P([
+                                      'Last updated: ',
+                                      html.Time(app_start_time, dateTime=app_start_time)
+                                  ], className='last-updated')
                               ], style={'width': '60%'}),
                           ]),
 

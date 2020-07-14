@@ -406,6 +406,11 @@ hr {
   display: table;
   clear: both; }
 
+/* Custom X-Plane stuff */
+.last-updated {
+  color: #888;
+  font-size: 1.4rem;
+}
 
 /* Media Queries
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
