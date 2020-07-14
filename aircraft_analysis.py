@@ -516,10 +516,10 @@ class AcfStatGrapher:
     acf_stats: AircraftStats
 
     def first_vs_third_party(self, with_title=False):
-        lr_percent = self.acf_stats.first_party_flights / self.acf_stats.total_flights
+        lr_ratio = round(self.acf_stats.first_party_flights / self.acf_stats.total_flights, 3)
         return make_pie_chart_figure({
-            'Laminar Research': lr_percent,
-            'Third Party': 1 - lr_percent
+            'Laminar Research': lr_ratio,
+            'Third Party': 1 - lr_ratio
         })
 
     def top_third_party(self, with_title=False):
@@ -556,7 +556,7 @@ class AcfStatGrapher:
                                      title='Top First-Party Aircraft' if with_title else None)
 
     def categories(self, with_title=False):
-        categories_with_other = counts_to_percents(self.acf_stats.categories, self.acf_stats.total_flights, smush_into_other_below_percent=2)
+        categories_with_other = counts_to_percents(self.acf_stats.categories, self.acf_stats.total_flights, smush_into_other_below_percent=0.5)
         return make_bar_chart_figure(categories_with_other, '', y_label='% Flights',
                                      needs_conversion_to_percents=False, already_sorted=True,
                                      title='Flights by Aircraft Category' if with_title else None)
@@ -588,7 +588,7 @@ def perform_aircraft_analysis(version, user_group):
     grapher = AcfStatGrapher(rankings)
     plotly.offline.plot(grapher.first_vs_third_party(), image='png', image_filename='first_vs_third_party' + file_name_suffix, image_width=1024, output_type='file')
 
-    categories_with_other = counts_to_percents(rankings.categories, rankings.total_flights, smush_into_other_below_percent=2)
+    categories_with_other = counts_to_percents(rankings.categories, rankings.total_flights, smush_into_other_below_percent=0.1)
     make_bar_chart(categories_with_other, 'aircraft_categories' + file_name_suffix, 'Aircraft Classification', y_label='% Flights', needs_conversion_to_percents=False, already_sorted=True, height_scaling_factor=1.2, x_axis_size=22)
 
     third_party = collections.OrderedDict()
