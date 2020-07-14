@@ -528,7 +528,7 @@ class AcfStatGrapher:
         third_party = collections.OrderedDict()
         third_party["Other"] = 0
         for i, acf in enumerate(reverse_sorted):
-            if len(third_party_flights) - 10 < i < len(third_party_flights):
+            if len(third_party_flights) - 20 < i < len(third_party_flights):
                 if 'Zibo and Twkster' in acf.studio:
                     key = 'Zibo and Twkster ' + acf.name
                 else:
@@ -546,7 +546,7 @@ class AcfStatGrapher:
         out = collections.OrderedDict()
         out["Other"] = 0
         for i, acf in enumerate(reverse_sorted):
-            if len(flights) - 10 < i < len(flights):
+            if len(flights) - 20 < i < len(flights):
                 out[acf.name] = flights[acf]
             else:
                 out["Other"] += flights[acf]
@@ -593,8 +593,8 @@ def perform_aircraft_analysis(version, user_group):
 
     third_party = collections.OrderedDict()
     third_party["Other 3rd-party aircraft"] = 0
-    for i, (acf, flights) in enumerate(analytics_utils.sort_dict_by_value(rankings.third_party).items()):
-        if i < 10:
+    for i, (acf, flights) in enumerate(sort_dict_by_value(rankings.third_party).items()):
+        if i < 20:
             key = acf.studio + ' ' + acf.name
             if 'Zibo and Twkster' in key:
                 key = 'Zibu & Twkster ' + acf.name
