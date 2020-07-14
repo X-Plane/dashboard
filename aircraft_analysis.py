@@ -342,6 +342,9 @@ class Aircraft(object):
         elif 'Boeing 737-800X' in name and 'Zibo' in studio:
             studio = u'Laminar Research modify by Zibo and Twkster'
             name = 'Boeing 737-800X'
+        elif 'Boeing 737-700U' in name and 'Zibo' in studio:
+            studio = u'Laminar Research modify by Zibo and Twkster'
+            name = 'Boeing 737-700U'
         elif 'toliss ' in name.lower() or 'toliss' in studio.lower():
             studio = 'ToLiss'
             if "A321" in name:
