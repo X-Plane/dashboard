@@ -128,7 +128,12 @@ class HardwareStats:
             'pimax 5k': 'Pimax 5K',
             'psvr': 'PSVR Headset',
             'windows': 'Windows Mixed Reality',
-            'lighthouse': 'OpenVR (like HTC Vive)'
+            'lighthouse': 'OpenVR (like HTC Vive)',
+            'vive': 'OpenVR (like HTC Vive)',
+            'aapvr': 'Phone',
+            'vridge': 'Phone',
+            'ivry': 'Phone',
+            'phonevr': 'Phone',
         }
         headset_count = collections.defaultdict(int)
         for row in self.qm.query(CustomDimension.VrHeadset):
