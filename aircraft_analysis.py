@@ -597,7 +597,7 @@ def perform_aircraft_analysis(version, user_group):
         if i < 20:
             key = acf.studio + ' ' + acf.name
             if 'Zibo and Twkster' in key:
-                key = 'Zibu & Twkster ' + acf.name
+                key = 'Zibo & Twkster ' + acf.name
             if ' and ' in key:
                 key = key.replace(' and ', ' & ')
             third_party[key] = flights
