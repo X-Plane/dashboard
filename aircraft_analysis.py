@@ -181,7 +181,7 @@ class Aircraft(object):
             elif '330 neo' in name.lower():
                 name = 'A330'
                 studio = 'JARDesign'
-            elif 'Boeing737-800_x737' in name:
+            elif 'Boeing737-800_x737' in name or 'EADT x737' in name:
                 name = 'Boeing 737-800'
                 studio = 'x737 project, EADT'
             elif 'FlightFactor ' in name:
@@ -333,7 +333,7 @@ class Aircraft(object):
         elif 'Cessna T210M Centurion II' in name and 'Carenado' in studio:
             name = 'Cessna T210M Centurion II'
             studio = 'Carenado/Thranda Design'
-        elif 'x737-800' in name:
+        elif 'x737-800' in name or 'EADT Boeing 737-800' in name:
             name = 'Boeing 737-800'
             studio = 'x737 project, EADT'
         elif '320 ultimate' in name.lower() or '320ultimate' in name.lower() or name == 'FF_A320' or 'FlightFactorA320' in name or name == 'A320FF' or name == 'FF A320' or name == 'FFA320':
@@ -341,6 +341,19 @@ class Aircraft(object):
             studio = 'Flight Factor'
         elif 'Boeing 737-800X' in name and 'Zibo' in studio:
             studio = u'Laminar Research modify by Zibo and Twkster'
+            name = 'Boeing 737-800X'
+        elif 'toliss ' in name.lower() or 'toliss' in studio.lower():
+            studio = 'ToLiss'
+            if "A321" in name:
+                name = 'A321'
+            elif "A319" in name:
+                name = 'A319'
+        elif '747-8' in name and 'Supercritical Simulations Group' in studio:
+            studio = 'Supercritical Simulations Group'
+            name = '747-8'
+
+        if studio.endswith(' - All rights reserved'):
+            studio = studio.replace(' - All rights reserved', '')
 
         for to_nuke in [' for X-Plane 11', 'Aerobask ', 'X-Crafts ', ' XP11', 'Carenado ', ' for XP11', ' For XP11', 'FJS ', 'Airfoillabs ']:
             name = name.replace(to_nuke, '')
@@ -352,6 +365,9 @@ class Aircraft(object):
                 name = 'Boeing 777'
             if name == 'Boeing 757' or name.startswith('Boeing757-200v'):
                 studio = 'Flight Factor and StepToSky'
+            elif 'Zenith' in name and '750' in name:
+                studio = 'Olivier Faivre & HydroZ'
+                name = 'Zenith CH 750'
 
         if 'Flight Factor' in studio:
             if '777' in name:
