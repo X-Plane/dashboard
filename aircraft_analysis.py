@@ -531,7 +531,7 @@ class AcfStatGrapher:
         third_party = collections.OrderedDict()
         third_party["Other"] = 0
         for i, acf in enumerate(reverse_sorted):
-            if len(third_party_flights) - 20 < i < len(third_party_flights):
+            if len(third_party_flights) - 50 < i < len(third_party_flights):
                 if 'Zibo and Twkster' in acf.studio:
                     key = 'Zibo and Twkster ' + acf.name
                 else:
@@ -541,7 +541,7 @@ class AcfStatGrapher:
                 third_party[key] = third_party_flights[acf]
             else:
                 third_party["Other"] += third_party_flights[acf]
-        return make_bar_chart_figure(third_party, '', y_label='% Third-Party Aircraft Flights', needs_conversion_to_percents=True, height_scaling_factor=1, horizontal=True, already_sorted=True, y_axis_size=16)
+        return make_bar_chart_figure(third_party, '', y_label='% Third-Party Aircraft Flights', needs_conversion_to_percents=True, height_scaling_factor=2.25, horizontal=True, already_sorted=True, y_axis_size=12)
 
     def top_first_party(self, with_title=False):
         flights = self.acf_stats.first_party

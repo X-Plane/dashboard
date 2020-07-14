@@ -93,6 +93,7 @@ def make_bar_chart_figure(data_dict, x_label, y_label='% Users', x_axis_size=16,
                                     layout=plotly.graph_objs.Layout(
                                         showlegend=False,
                                         title=title,
+                                        height=450 * height_scaling_factor,
                                         xaxis=dict(tickfont=dict(size=x_axis_size), title=y_label if horizontal else x_label, automargin=True),
                                         yaxis=dict(tickfont=dict(size=y_axis_size), title=x_label if horizontal else y_label, automargin=True),
                                         margin=dict(t=0, b=0, pad=0)
