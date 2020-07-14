@@ -103,7 +103,7 @@ class HardwareStats:
         out = counts_to_percents(out)
 
         with suppress(KeyError):
-            if out['Unknown'] < 0.2:
+            if out['Unknown'] < 0.3:
                 del out['Unknown']
 
         return out
@@ -146,7 +146,7 @@ class HardwareStats:
         vr_start_date = Version.v1120r4.value.start_date
         total_users = sum(str_to_int(row[1]) for row in self.qm.query(CustomDimension.Ram, override_start_date=vr_start_date))
         vr_users = sum(str_to_int(row[1]) for row in self.qm.query(CustomDimension.VrHeadset, override_start_date=vr_start_date))
-        vr_pct = vr_users / total_users
+        vr_pct = round((vr_users / total_users) * 100, 2)
         return {
             'Have Used VR': vr_pct,
             '2-D Monitor Only': 100 - vr_pct

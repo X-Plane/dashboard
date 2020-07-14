@@ -157,7 +157,7 @@ app.layout = html.Div([
                           html.Div([
                               html.Div([
                                   html.H2('Top Starting Locations', className='graph-title left', id='locations-heading'),
-                                  make_table(['Rank', 'Location', '% Flights'], ((i + 1, loc, "%0.4f%%" % (pct * 10)) for i, (loc, pct) in enumerate(itertools.islice(starting_locations(service), 1, 51)))),
+                                  make_table(['Rank', 'Location', '% Flights'], ((i + 1, loc, "%0.3f%%" % (pct * 10)) for i, (loc, pct) in enumerate(itertools.islice(starting_locations(service), 1, 51)))),
                               ], style={'float': 'right', 'width': '33%'}),
 
                               html.Div([

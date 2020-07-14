@@ -144,11 +144,11 @@ def counts_to_percents(count_dict: Dict[str, int], override_total: Union[None, i
     for key, count in sorted.items():
         percent = count / total * 100
         if percent >= smush_into_other_below_percent:
-            out[key] = percent
+            out[key] = round(percent, 2 if percent < 2 else 1)
         else:
             other_percent += percent
     if other_percent > 0:
-        out['Other'] = other_percent
+        out['Other'] = round(other_percent, 2)
     return out
 
 def str_to_int(as_str):
