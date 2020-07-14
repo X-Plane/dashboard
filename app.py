@@ -110,7 +110,7 @@ app.layout = html.Div([
                                                html.Ul([
                                                    html.Li(html.A('RAM', href='#ram-heading')),
                                                    html.Li(html.A('Graphics Card Manufacturer', href='#gpu-mfr-heading')),
-                                                   html.Li(html.A('Users Who Have Flown in VR in 2019', href='#vr-usage-heading')),
+                                                   html.Li(html.A('Users Who Have Flown in VR', href='#vr-usage-heading')),
                                                    html.Li(html.A('VR Headsets in Use', href='#vr-headsets-heading')),
                                                ])]),
                                        html.Li(html.A('Operating Systems', href='#os-heading')),
@@ -169,12 +169,9 @@ app.layout = html.Div([
                                   html.H3('Graphics Card Manufacturer', className='graph-title', id='gpu-mfr-heading'),
                                   dcc.Graph(id='gpu-manufacturer', figure=hw_grapher.gpu_manufacturers()),
 
-                                  html.H3('Users Who Have Flown in VR in 2019', className='graph-title', id='vr-usage-heading'),
+                                  html.H3('Users Who Have Flown in VR', className='graph-title', id='vr-usage-heading'),
                                   # TODO: Fix live reporting...
-                                  dcc.Graph(id='vr-usage', figure=make_pie_chart_figure({
-                                      'Have Used VR': 2.06,
-                                      '2-D Monitor Only': 100 - 2.06
-                                  }, top_pad_px=40)),
+                                  dcc.Graph(id='vr-usage', figure=hw_grapher.vr_usage()),
 
                                   html.H3('VR Headsets in Use', className='graph-title', id='vr-headsets-heading'),
                                   dcc.Graph(id='vr-headsets', figure=hw_grapher.vr_headsets()),
