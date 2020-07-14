@@ -107,6 +107,9 @@ class Version(Enum):
     v1133r2 = VersionMetadata(name='11.33r2', is_final=True,  start='2019-04-26', end='today')
     v1134r1 = VersionMetadata(name='11.34r1', is_final=True,  start='2019-05-07', end='today')
     v1135b2 = VersionMetadata(name='11.35b2', is_final=False, start='2019-06-06', end='today')
+    v1136r2 = VersionMetadata(name='11.36r2', is_final=True, start='2019-08-29', end='today')
+    v1140r2 = VersionMetadata(name='11.40r2', is_final=True, start='2019-11-01', end='today')
+    v1141r1 = VersionMetadata(name='11.41r1', is_final=True, start='2019-12-03', end='today')
 
     def __str__(self): return self.value.name
 
