@@ -41,7 +41,7 @@ class Category(Enum):
         mappings = {
             Category.GenAv: [u'Aviação Geral', u'小型機', u'Avion général', u'Малая авиация', u'Aviation Générale', u'Aviación General', u'Avión de Pasajeros', 'Aviazione Generale', 'Allgemeine Luftfahrt', 'Avion de tourisme'],
             Category.Airliner: ['Aereo di linea', 'Verkehrsflugzeug', 'Avion de ligne', 'Avion de Ligne', u'Aviação Comercial', u'Авиалайнеры', u'航空会社', u'民航客机', u'客机', u'通用航空器'],
-            Category.Seaplane: ['Hydravion', 'Flugboot', u'Hidroavión', u'水上飛行機', 'Idrovolante', '水上飞机'],
+            Category.Seaplane: ['Hydravion', 'hidroavião', 'Flugboot', u'Hidroavión', u'水上飛行機', 'Idrovolante', '水上飞机'],
             Category.Heli: ['Hubschrauber', 'Elicottero', u'Helicóptero', u'Hélicopter', u'Hélicoptère', u'Вертолеты', u'ヘリコプター', '直升机'],
             Category.Glider: ['Segler', 'Planador', u'Планёры', 'Planeador', 'Planeur', 'Segelflieger', 'Aliante', u'グライダー', '滑翔机'],
             Category.Military: [u'Militär', 'Militaire', 'Militar', 'Militare', u'軍用機', '军用飞机', 'Военные ЛА'],
@@ -57,7 +57,7 @@ class Category(Enum):
 
         match = [e for e in Category if e.value == category_str]
         assert match, "No known category \"%s\"" % category_str
-        return match[0]
+        return match[0] if match else None
 
 
 class Aircraft(object):
