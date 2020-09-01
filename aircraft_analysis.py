@@ -525,23 +525,22 @@ class AcfStatGrapher:
             'Third Party': 1 - lr_ratio
         })
 
-    def top_third_party(self, with_title=False):
-        third_party_flights = self.acf_stats.third_party
-        reverse_sorted = reversed(sort_dict_by_value(third_party_flights))
+    def top_third_party(self, with_title: bool=False, max_entries: int=50):
+        to_key = lambda acf: 'Zibo & Twkster ' + acf.name if 'Zibo and Twkster' in acf.studio else (acf.studio + ' ' + acf.name).replace(' and ', ' & ')
+        merged = {to_key(acf): flight_count
+                  for acf, flight_count in self.acf_stats.third_party.items()}
+
         third_party = collections.OrderedDict()
-        third_party["Other"] = 0
-        for i, acf in enumerate(reverse_sorted):
-            if len(third_party_flights) - 50 < i < len(third_party_flights):
-                if 'Zibo and Twkster' in acf.studio:
-                    key = 'Zibo and Twkster ' + acf.name
-                else:
-                    key = acf.studio + ' ' + acf.name
-                if ' and ' in key:
-                    key = key.replace(' and ', ' & ')
-                third_party[key] = third_party_flights[acf]
+        other_count = 0
+        for studio_and_acf, flight_count in sort_dict_by_value(merged).items():
+            if len(third_party) < max_entries:
+                third_party[studio_and_acf] = flight_count
             else:
-                third_party["Other"] += third_party_flights[acf]
-        return make_bar_chart_figure(third_party, '', y_label='% Third-Party Aircraft Flights', needs_conversion_to_percents=True, height_scaling_factor=2.25, horizontal=True, already_sorted=True, y_axis_size=12)
+                other_count += flight_count
+
+        third_party["Other"] = other_count
+        reversed_for_display = OrderedDict(reversed(list(third_party.items())))
+        return make_bar_chart_figure(reversed_for_display, '', y_label='% Third-Party Aircraft Flights', needs_conversion_to_percents=True, height_scaling_factor=2.25, horizontal=True, already_sorted=True, y_axis_size=12)
 
     def top_first_party(self, with_title=False):
         flights = self.acf_stats.first_party
